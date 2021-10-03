@@ -236,12 +236,12 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
         :return: List of updated shows with full meta
         :rtype: list
         """
-        g.log("Fetching show list from sync database", "debug")
+        g.log("Fetching show list from sync database and updating", "debug")
         trakt_list = [i for i in trakt_list if i.get("trakt_id")]
         self._update_mill_format_shows(trakt_list, False)
-        g.log("Show list update and milling compelete", "debug")
+        g.log("Show list update and milling complete", "debug")
         statement = """SELECT s.trakt_id, s.info, s.cast, s.art, s.args, s.watched_episodes, s.unwatched_episodes, 
-        s.episode_count, s.season_count FROM shows as s WHERE s.trakt_id in ({}) """.format(
+        s.episode_count, s.season_count, s.air_date, s.user_rating FROM shows as s WHERE s.trakt_id in ({}) """.format(
             ",".join((g.UNICODE(i.get("trakt_id")) for i in trakt_list))
         )
         if params.pop("hide_unaired", self.hide_unaired):
@@ -264,11 +264,11 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
         :return: List of seasons with full meta
         :rtype: list
         """
-        g.log("Fetching season list from sync database", "debug")
+        g.log("Fetching season list from sync database and updating", "debug")
         self._try_update_seasons(trakt_show_id, trakt_id)
         g.log("Updated requested seasons", "debug")
         statement = """SELECT s.trakt_id, s.info, s.cast, s.art, s.args, s.watched_episodes, s.unwatched_episodes, 
-        s.episode_count FROM seasons AS s WHERE """
+        s.episode_count, s.air_date, s.user_rating FROM seasons AS s WHERE """
         if trakt_id is not None:
             statement += "s.trakt_id == {}".format(trakt_id)
         else:
@@ -306,93 +306,11 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
         :return: List of episode objects with full meta
         :rtype: list
         """
-        g.log("Fetching Episode list from sync database", "debug")
-        #self._try_update_episodes(trakt_show_id, trakt_season_id, trakt_id)
-        #xbmc.log(str('SEREN_MODIFICATION')+'===>PHIL', level=xbmc.LOGINFO)
-        
-        try:
-            self._try_update_episodes(trakt_show_id, trakt_season_id, trakt_id)
-        except:
-            #try:
-            xbmc.log(str('SEREN_MODIFICATION')+'===>PHIL', level=xbmc.LOGINFO)
-            if 1==1:
-                import sys
-                import xbmc
-                #xbmc.log(str(sys.argv)+'===>PHIL', level=xbmc.LOGINFO)
-                from urllib.parse import unquote
-                action_vars = unquote(sys.argv[2])
-                action_vars = action_vars.split('{')[1].split('}')[0]
-                episode = action_vars.split('"episode":')[1].split(',')[0].strip()
-                season = action_vars.split('"season":')[1].split(',')[0].strip()
-                import requests
-                import json
-                import os
-                from os.path import expanduser
-
-                home = expanduser("~")
-                import xml.etree.ElementTree as ET
-                tree = ET.parse(home + '/.kodi/userdata/addon_data/plugin.video.themoviedb.helper/settings.xml')
-                root = tree.getroot()
-
-                for child in root:
-                    if (child.attrib)['id'] == 'trakt_token':
-                        token = json.loads(child.text)
-
-                home = expanduser("~")
-                try:
-                    inFile = open(home + '/.kodi/addons/plugin.video.themoviedb.helper/resources/lib/traktapi.py')
-                    for line in inFile:
-                        if 'self.client_id = ' in line:
-                            client_id = line.replace('self.client_id = ','').replace('\'','').replace('    ','').replace('\n', '')
-                        if 'self.client_secret = ' in line:
-                            client_secret = line.replace('self.client_secret = ','').replace('\'','').replace('    ','').replace('\n', '')
-                except:
-                    inFile = open(home + '/.kodi/addons/plugin.video.themoviedb.helper/resources/lib/trakt/api.py')
-                    for line in inFile:
-                        if 'CLIENT_ID = ' in line:
-                            client_id = line.replace('CLIENT_ID = ','').replace('\'','').replace('    ','').replace('\n', '')
-                        if 'CLIENT_SECRET = ' in line:
-                            client_secret = line.replace('CLIENT_SECRET = ','').replace('\'','').replace('    ','').replace('\n', '')
-
-                inFile.close()
-
-                headers = {'trakt-api-version': '2', 'trakt-api-key': client_id, 'Content-Type': 'application/json'}
-                headers['Authorization'] = 'Bearer {0}'.format(token.get('access_token'))
-                response = requests.get('https://api.trakt.tv/shows/'+str(trakt_show_id)+'/seasons', headers=headers).json()
-
-                #xbmc.log(str(response)+'===>PHIL', level=xbmc.LOGINFO)
-                trakt_season_id = response[int(season)-1]['ids']['trakt']
-                #self.execute_sql(
-                #    "UPDATE episodes SET trakt_season_id=? WHERE trakt_show_id=? and season=?",
-                #    (trakt_season_id, trakt_show_id,int(season)),
-                #)
-                #self.execute_sql(
-                #    "UPDATE seasons SET trakt_id=? WHERE trakt_show_id=? and season=?", (trakt_season_id, trakt_show_id,int(season))
-                #)
-
-                import sqlite3
-                con = sqlite3.connect('/home/osmc/.kodi/userdata/addon_data/plugin.video.seren/traktSync.db')
-                cur = con.cursor()
-
-                update_sql = ("UPDATE episodes SET trakt_season_id="+str(trakt_season_id)+" WHERE trakt_show_id="+str(trakt_show_id)+" and season="+str(season))
-                cur.execute(update_sql).fetchall()
-                con.commit()
-
-                update_sql = ("UPDATE seasons SET trakt_id="+str(trakt_season_id)+" WHERE trakt_show_id="+str(trakt_show_id)+" and season="+str(season))
-                cur.execute(update_sql).fetchall()
-                con.commit()
-
-                cur.close()
-                con.close()
-
-                self._try_update_episodes(trakt_show_id, trakt_season_id, trakt_id)
-            #except Exception as e: 
-            #    xbmc.log(str(e)+'===>PHIL', level=xbmc.LOGINFO)
-        
-        #xbmc.log(str('SEREN_MODIFICATION')+'===>PHIL', level=xbmc.LOGINFO)
+        g.log("Fetching Episode list from sync database and updating", "debug")
+        self._try_update_episodes(trakt_show_id, trakt_season_id, trakt_id)
         g.log("Updated required episodes", "debug")
         statement = """SELECT e.trakt_id, e.info, e.cast, e.art, e.args, e.watched as play_count,
-         b.resume_time as resume_time, b.percent_played as percent_played FROM episodes as e 
+         b.resume_time as resume_time, b.percent_played as percent_played, e.user_rating FROM episodes as e 
          LEFT JOIN bookmarks as b on e.trakt_id = b.trakt_id WHERE """
 
         if trakt_season_id is not None:
@@ -429,13 +347,13 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
         if g.get_bool_setting("general.showRemainingUnwatched"):
             query = """SELECT e.trakt_id, e.info, e.cast, e.art, e.args, e.watched as play_count, b.resume_time as 
             resume_time, b.percent_played as percent_played, se.watched_episodes, se.unwatched_episodes, 
-            se.episode_count FROM episodes as e INNER JOIN seasons se on e.trakt_season_id = se.trakt_id
+            se.episode_count, e.user_rating FROM episodes as e INNER JOIN seasons se on e.trakt_season_id = se.trakt_id
             LEFT JOIN bookmarks as b on e.Trakt_id = b.Trakt_id WHERE e.trakt_id in ({})""".format(
                 in_predicate
             )
         else:
             query = """SELECT e.trakt_id, e.info, e.cast, e.art, e.args, e.watched as play_count, b.resume_time as 
-            resume_time, b.percent_played as percent_played FROM episodes as e LEFT JOIN bookmarks as b on e.Trakt_id = 
+            resume_time, b.percent_played as percent_played, e.user_rating FROM episodes as e LEFT JOIN bookmarks as b on e.Trakt_id = 
             b.Trakt_id WHERE e.trakt_id in ({})""".format(
                 in_predicate
             )
@@ -464,11 +382,12 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
         :return: Show item with full meta
         :rtype: dict
         """
-        return self.get_show_list(
+        result = self.get_show_list(
             [self._get_single_show_meta(trakt_id)],
             hide_unaired=False,
             hide_watched=False
-        )[0]
+        )
+        return result[0] if len(result) > 0 else []
 
     @guard_against_none(list)
     def get_season(self, trakt_id, trakt_show_id):
@@ -481,11 +400,12 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
         :return: Season item with full meta
         :rtype: dict
         """
-        return self.get_season_list(
+        result = self.get_season_list(
             trakt_show_id, trakt_id,
             hide_unaired=False,
             hide_watched=False
-        )[0]
+        )
+        return result[0] if len(result) > 0 else []
 
     @guard_against_none(list)
     def get_episode(self, trakt_id, trakt_show_id):
@@ -502,19 +422,21 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
             trakt_show_id, trakt_id=trakt_id,
             hide_unaired=False,
             hide_watched=False
-        )[0]
-        result.update(
-            self.fetchone(
-                """select s.season_count, s.episode_count as show_episode_count, 
-        se.episode_count, se.is_airing, a.absoluteNumber from episodes as e INNER JOIN seasons as se on se.trakt_id = 
-        e.trakt_season_id INNER JOIN shows as s on s.trakt_id = e.trakt_show_id INNER JOIN 
-        (select e.trakt_show_id, count(distinct e.trakt_id) as absoluteNumber from episodes as e inner join 
-        (select e.trakt_show_id, (e.season*10 + e.number) as identifier from episodes as e where e.trakt_id = ?) as 
-        agg on agg.trakt_show_id = e.trakt_show_id and agg.identifier >= (e.season*10 + number) group by 
-        e.trakt_show_id) as a on a.trakt_show_id = e.trakt_show_id WHERE e.trakt_id = ?""",
-                (trakt_id, trakt_id),
-            )
         )
+        if len(result) > 0:
+            result = result[0]
+            result.update(
+                self.fetchone(
+                    """select s.season_count, s.episode_count as show_episode_count, 
+            se.episode_count, se.is_airing, a.absoluteNumber, e.user_rating from episodes as e INNER JOIN seasons as se 
+            on se.trakt_id = e.trakt_season_id INNER JOIN shows as s on s.trakt_id = e.trakt_show_id INNER JOIN 
+            (select e.trakt_show_id, count(distinct e.trakt_id) as absoluteNumber from episodes as e inner join 
+            (select e.trakt_show_id, (e.season*10 + e.number) as identifier from episodes as e where e.trakt_id = ?) as 
+            agg on agg.trakt_show_id = e.trakt_show_id and agg.identifier >= (e.season*10 + number) group by 
+            e.trakt_show_id) as a on a.trakt_show_id = e.trakt_show_id WHERE e.trakt_id = ?""",
+                    (trakt_id, trakt_id),
+                )
+            )
         return result
 
     @guard_against_none(list)
@@ -612,6 +534,9 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
                     i["info"].get("episode_count"),
                     self._create_args(i),
                     i["info"].get("is_airing"),
+                    i["info"].get("last_watched_at"),
+                    i["info"].get("last_collected_at"),
+                    i["info"].get("user_rating"),
                     i["info"]["trakt_id"],
                 )
                 for i in formatted_items
@@ -680,6 +605,9 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
                     i["info"].get("episode_count"),
                     i["info"].get("season"),
                     self._create_args(i),
+                    i["info"].get("last_watched_at"),
+                    i["info"].get("last_collected_at"),
+                    i["info"].get("user_rating"),
                     i["info"]["trakt_id"],
                 )
                 for i in formatted_items
@@ -749,6 +677,7 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
                     i.get("art"),
                     i.get("cast"),
                     self._create_args(i),
+                    None,
                     None,
                     None,
                     self.metadataHandler.meta_hash,
