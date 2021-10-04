@@ -10,7 +10,6 @@ from resources.lib.modules.guard_decorators import (
 )
 from resources.lib.modules.metadataHandler import MetadataHandler
 
-import xbmc
 
 class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
     """
@@ -652,9 +651,7 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
     @guard_against_none_or_empty()
     def _format_episodes(self, list_to_update):
         formatted_items = self._format_objects(self._identify_episodes_to_update(list_to_update))
-        """
-        #xbmc.log(str('SEREN_MODIFICATION')+'===>PHIL', level=xbmc.LOGINFO)
-        
+
         if formatted_items is None:
             return
         self.execute_sql(
@@ -686,86 +683,6 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
                 for i in formatted_items
             ),
         )
-        #xbmc.log(str('SEREN_MODIFICATION')+'===>PHIL', level=xbmc.LOGINFO)
-        """
-        try:
-            if formatted_items is None:
-                return
-            self.execute_sql(
-                self.upsert_episode_query,
-                (
-                    (
-                        i["info"]["trakt_id"],
-                        i["info"]["trakt_show_id"],
-                        i["info"]["trakt_season_id"],
-                        None,
-                        None,
-                        i["info"].get("aired"),
-                        i["info"].get("dateadded"),
-                        i["info"].get("season"),
-                        i["info"].get("episode"),
-                        i["info"].get("tmdb_id"),
-                        i["info"].get("tvdb_id"),
-                        i["info"].get("imdb_id"),
-                        i["info"],
-                        i.get("art"),
-                        i.get("cast"),
-                        self._create_args(i),
-                        None,
-                        None,
-                        self.metadataHandler.meta_hash,
-                        i["info"]["trakt_id"],
-                    )
-                    for i in formatted_items
-                ),
-            )
-        except:
-            #xbmc.log(str('SEREN_MODIFICATION')+'===>PHIL', level=xbmc.LOGINFO)
-            for i in formatted_items:
-                #xbmc.log(str(i)+'===>PHIL', level=xbmc.LOGINFO)
-                if 'tvshow.trakt_id' in str(i):
-                    trakt_show_id = i['info']['tvshow.trakt_id']
-                    break
-            import sqlite3
-            con = sqlite3.connect('/home/osmc/.kodi/userdata/addon_data/plugin.video.seren/traktSync.db')
-            cur = con.cursor()
-            sql = cur.execute('select * from seasons where trakt_show_id = ' + str(trakt_show_id)).fetchall()
-            trakt_season_id = sql[0][0]
-
-            if formatted_items is None:
-                return
-            self.execute_sql(
-                self.upsert_episode_query,
-                (
-                    (
-                        i["info"]["trakt_id"],
-                        i["info"]["trakt_show_id"],
-                        trakt_season_id,
-                        None,
-                        None,
-                        i["info"].get("aired"),
-                        i["info"].get("dateadded"),
-                        i["info"].get("season"),
-                        i["info"].get("episode"),
-                        i["info"].get("tmdb_id"),
-                        i["info"].get("tvdb_id"),
-                        i["info"].get("imdb_id"),
-                        i["info"],
-                        i.get("art"),
-                        i.get("cast"),
-                        self._create_args(i),
-                        None,
-                        None,
-                        self.metadataHandler.meta_hash,
-                        i["info"]["trakt_id"],
-                    )
-                    for i in formatted_items
-                ),
-            )
-            #xbmc.log(str('SEREN_MODIFICATION')+'===>PHIL', level=xbmc.LOGINFO)
-        """
-        #xbmc.log(str('SEREN_MODIFICATION')+'===>PHIL', level=xbmc.LOGINFO)
-        """
 
     @guard_against_none(None, 1)
     def _try_update_seasons(self, trakt_show_id, trakt_season_id=None):
