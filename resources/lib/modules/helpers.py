@@ -42,7 +42,7 @@ class SourcesHelper(object):
     Helper object to stream line scraping of items
     """
     @use_cache(1)
-    def get_sources(self, action_args, overwrite_cache=False):
+    def get_sources(self, action_args, overwrite_cache=None):
         """
         Method to handle automatic background or foreground scraping
         :param action_args: action arguments from request uri
