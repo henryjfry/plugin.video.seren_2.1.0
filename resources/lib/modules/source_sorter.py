@@ -225,8 +225,16 @@ class SourceSorter:
         self._size_sort()
         self._do_priorities()
         sorted_list = self.group_style[self.sort_method]()
-        return [i for i in sorted_list if i.get("type") == "cloud"] +\
-               [i for i in sorted_list if i.get("type") != "cloud"]
+        #xbmc.log(str(sorted_list)+'===>PHIL', level=xbmc.LOGINFO)
+        #return sorted_list
+        sorted_list2 = [i for i in sorted_list if i.get("type") == "cloud" and i.get("quality") == "4K"] + [i for i in sorted_list if i.get("type") != "cloud" and i.get("quality") == "4K"]
+        sorted_list2 = sorted_list2 + [i for i in sorted_list if i.get("type") == "cloud" and i.get("quality") == "2160p"] + [i for i in sorted_list if i.get("type") != "cloud" and i.get("quality") == "2160p"]
+        sorted_list2 = sorted_list2 + [i for i in sorted_list if i.get("type") == "cloud" and i.get("quality") == "1080p"] + [i for i in sorted_list if i.get("type") != "cloud" and i.get("quality") == "1080p"]
+        sorted_list2 = sorted_list2 + [i for i in sorted_list if i.get("type") == "cloud" and i.get("quality") == "720p"] + [i for i in sorted_list if i.get("type") != "cloud" and i.get("quality") == "720p"]
+        sorted_list2 = sorted_list2 + [i for i in sorted_list if i.get("type") == "cloud" and i.get("quality") == "SD"] + [i for i in sorted_list if i.get("type") != "cloud" and i.get("quality") == "SD"]
+        return sorted_list2
+        #return [i for i in sorted_list if i.get("type") == "cloud"] +\
+        #       [i for i in sorted_list if i.get("type") != "cloud"]
 
     def sort_sources(self, torrents=None, hosters=None, cloud=None):
         """Takes in multiple optional lists of sources and sorts them according to Seren's sort settings
