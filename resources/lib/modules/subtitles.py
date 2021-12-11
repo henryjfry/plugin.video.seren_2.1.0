@@ -46,6 +46,9 @@ class SubtitleService:
         except IndexError:
             g.log("No subtitles available from A4kSubtitles", "error")
             return None
+        except BadZipFile:
+            g.log("No subtitles available from A4kSubtitles", "error")
+            return None
 
 
 class A4kSubtitlesAdapter:
