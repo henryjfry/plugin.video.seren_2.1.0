@@ -188,6 +188,7 @@ class SerenPlayer(xbmc.Player):
         """
         if self.isPlaying():
             xbmc.Player().setSubtitles(subtitle)
+            xbmc.Player().showSubtitles(False)
         else:
             return None
 
