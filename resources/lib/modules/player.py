@@ -349,6 +349,130 @@ class SerenPlayer(xbmc.Player):
         subtitle = subtitles.SubtitleService().get_subtitle()
         if subtitle is not None:
             self.setSubtitles(subtitle)
+        player = xbmc.Player()
+        player.showSubtitles(False)
+
+        json_result = xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params": {"labels":["VideoPlayer.AudioLanguage"]}, "id":1}')
+        json_object  = json.loads(json_result)
+        #xbmc.log(str(json_object)+'===>PHIL_SUBTITLES!!!!!!', level=xbmc.LOGINFO)
+        try: curr_lang = json_object['result']['VideoPlayer.AudioLanguage']
+        except: curr_lang = None
+
+        json_result = xbmc.executeJSONRPC('{"jsonrpc": "2.0","id": "1","method": "Player.GetProperties","params": {"playerid": 1,"properties": ["subtitles"]}}')
+        json_object  = json.loads(json_result)
+        #xbmc.log(str(json_object)+'===>PHIL', level=xbmc.LOGINFO)
+        enable_sub = False
+        try:
+            for i in json_object['result']['subtitles']:
+                if 'full' in str(i['name']).lower() and 'eng' in str(i['name']).lower() and len(audio) < 5 and len(audio) > 1:
+                    xbmc.log(str('SUBTITLES')+'a4k1===>PHIL', level=xbmc.LOGFATAL)
+                    sub_index = int(i['index'])
+                    enable_sub = False
+                    #player.setSubtitleStream(sub_index)
+                    
+                if i['isforced'] == True and 'eng' in str(i['language']).lower():
+                    xbmc.log(str('SUBTITLES')+'===>PHIL', level=xbmc.LOGFATAL)
+                    sub_index = int(i['index'])
+                    enable_sub = True
+                    #player.setSubtitleStream(sub_index)
+                    break
+
+        except:
+            pass
+        try:
+            xbmc.log(str('SUBTITLES')+'a4k2===>PHIL', level=xbmc.LOGFATAL)
+            #xbmc.log(str(json_object['result']['subtitles'])+'===>PHIL', level=xbmc.LOGINFO)
+            subs = player.getAvailableSubtitleStreams()
+            audio = player.getAvailableAudioStreams()
+            x = 0
+            y = 0
+            for i in audio:
+                try:
+                    if x == 0 and 'eng' in str(i).lower():
+                        if len(audio) == 1 and len(subs) == 1:
+                            
+                            break
+                        y = 0
+                        for j in json_object['result']['subtitles']:
+                            if j['isforced'] == True and 'eng' in str(j['language']).lower():
+                                #player.setSubtitleStream(y)
+                                sub_index = j['index']
+                                enable_sub = True
+                                if not 'eng' in str(curr_lang):
+                                    player.setAudioStream(x)
+                                #player.showSubtitles(True)
+                                break
+                            y = y + 1
+                        if j['isforced'] == True and 'eng' in str(j['language']).lower():
+                            enable_sub = True
+                            sub_index = j['index']
+                            break
+                        else:
+                            y = 0
+                    if x == 0 and 'jpn' in str(i) and 'eng' in str(audio[x+1]):
+                        for j in subs:
+                            if 'eng' in str(j):
+                                #player.setSubtitleStream(y)
+                                sub_index = y
+                                enable_sub = True
+                                if not 'eng' in str(curr_lang):
+                                    player.setAudioStream(x)
+                                #player.showSubtitles(True)
+                                break
+                        
+                        break
+                    if x == 0 and 'rus' in str(i):
+                        y = 0
+                        for k in audio:
+                            if 'eng' in str(k): 
+                                if not 'eng' in str(curr_lang):
+                                    player.setAudioStream(y)
+                                #player.showSubtitles(False)
+                                #enable_sub = False
+                                y = 0
+                                break
+                            y = y + 1
+                        y = 0
+                        for k in subs:
+                            if 'eng' in str(k): 
+                                #player.setSubtitleStream(y)
+                                sub_index = y
+                                #player.showSubtitles(False)
+                                #enable_sub = False
+                                y = 0
+                                break
+                            y = y + 1
+                        break
+                    if x == 1:
+                        if 'jpn' not in str(audio[x-1]) and 'eng' not in str(audio[x-1]) and 'eng' in str(audio[x]):
+                            if not 'eng' in str(curr_lang):
+                                player.setAudioStream(x)
+                            #player.showSubtitles(False)
+                            break
+                except:
+                    if x == 0 and 'jpn' in str(i):
+                        for j in subs:
+                            if 'eng' in str(j):
+                                #player.setSubtitleStream(y)
+                                sub_index = y
+                                if not 'eng' in str(curr_lang):
+                                    player.setAudioStream(x)
+                                #player.showSubtitles(True)
+                                enable_sub = True
+                                
+                                break
+                        break
+                        y = y + 1
+                x = x +1
+        except:
+            
+            pass
+        try: player.setSubtitleStream(sub_index)
+        except: enable_sub = False
+        if enable_sub == True:
+            player.showSubtitles(True)
+        else:
+            player.showSubtitles(False)
 
     @staticmethod
     def _get_kodi_preferred_subtitle_language():
