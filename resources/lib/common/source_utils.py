@@ -66,14 +66,14 @@ def get_quality(release_title):
             "hdtc",
             "telecine",
             "xbet",
-            "Paramount Comedy",
+            "paramount comedy",
             "flux.mp4",
             "dvsux",
             "sample"
         ]
     ):
         quality = "CAM"
-    if 'dv' in str(release_title).lower() and '2160' in str(release_title).lower() and '265' in str(release_title).lower() and not 'hdr' in str(release_title).lower():
+    if 'dv' in str(release_title).lower() and '2160' in str(release_title).lower() and ('265' in str(release_title).lower() or 'hevc' in str(release_title).lower()) and not 'hdr' in str(release_title).lower():
         quality = "CAM"
 
     return quality
