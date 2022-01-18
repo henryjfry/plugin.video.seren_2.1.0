@@ -69,7 +69,12 @@ def get_quality(release_title):
             "paramount comedy",
             "flux.mp4",
             "dvsux",
-            "sample"
+            " dv ", 
+            "dovi",
+            "dolby vision",
+            "dolbyvision",
+            "sample",
+            "hdrezka"
         ]
     ):
         quality = "CAM"
