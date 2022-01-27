@@ -337,6 +337,7 @@ class RealDebrid:
             else True
         )
 
+
     @use_cache(24)
     def get_relevant_hosters(self):
         host_list = self.get_url("hosts/status")
