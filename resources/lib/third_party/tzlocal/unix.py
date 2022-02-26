@@ -3,7 +3,11 @@ import re
 import warnings
 
 from . import utils
-from .. import pytz
+try:
+	from .. import pytz
+except:
+	import pytz
+
 
 _cache_tz = None
 
