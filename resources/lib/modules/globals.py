@@ -17,9 +17,10 @@ import xbmcplugin
 import xbmcvfs
 from unidecode import unidecode
 
+import pytz
 from resources.lib.common import tools
 from resources.lib.modules.settings_cache import PersistedSettingsCache, RuntimeSettingsCache
-from resources.lib.third_party import pytz, tzlocal
+from resources.lib.third_party import tzlocal
 from resources.lib.third_party.cached_property import cached_property
 
 viewTypes = [
