@@ -4,7 +4,10 @@ from __future__ import absolute_import, division, unicode_literals
 import xbmcgui
 
 from resources.lib.modules.globals import g
-from resources.lib.third_party import pytz
+try:
+	from resources.lib.third_party import pytz
+except:
+	import pytz
 
 
 def validate_timezone_detected():
