@@ -32,6 +32,29 @@ g.log("### Detected Kodi Version: {}".format(g.KODI_VERSION))
 g.log("### Detected timezone: {}".format(repr(g.LOCAL_TIMEZONE.zone)))
 g.log("#############  SERVICE ENTERED KEEP ALIVE  #################")
 
+
+osAndroid = xbmc.getCondVisibility('system.platform.android')
+if osAndroid:
+	from pathlib import Path
+	import shutil
+	import os
+	import xbmcvfs
+
+	seren_path = str(Path(xbmcvfs.translatePath("special://home/addons/plugin.video.seren/resources/skins/Default/1080i")))
+	seren_user_path = str(Path(xbmcvfs.translatePath("special://userdata/addon_data/plugin.video.seren/skins/SerenMod-Full/resources/skins/Default/1080i")))
+	#seren_path = '/home/osmc/plugin.video.seren/resources/skins/Default/1080i'
+
+	src_path = seren_path + '/Android_1080i'
+	trg_path = seren_path
+
+	if not os.path.exists(seren_path + '/android_update'):
+		for src_file in Path(src_path).glob('*.*'):
+			shutil.copy(os.path.join(src_path,src_file),trg_path)
+			shutil.copy(os.path.join(src_path,src_file),seren_user_path)
+			#os.remove(os.path.join(src_path,src_file))
+
+	Path(seren_path + '/android_update').touch()
+
 monitor = SerenMonitor()
 try:
     xbmc.executebuiltin(
