@@ -224,8 +224,8 @@ class Sources(object):
         if not self._is_playable_source():
             self._build_cache_assist()
             g.cancel_playback()
-            if self.silent:
-                g.notification(g.ADDON_NAME, g.get_language_string(30055))
+            #if self.silent:
+            #    g.notification(g.ADDON_NAME, g.get_language_string(30055))
             return uncached, [], self.item_information
 
         sorted_sources = SourceSorter(self.media_type).sort_sources(
