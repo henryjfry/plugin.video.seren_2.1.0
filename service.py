@@ -52,8 +52,7 @@ if osAndroid:
 			shutil.copy(os.path.join(src_path,src_file),trg_path)
 			shutil.copy(os.path.join(src_path,src_file),seren_user_path)
 			#os.remove(os.path.join(src_path,src_file))
-
-	Path(seren_path + '/android_update').touch()
+		Path(seren_path + '/android_update').touch()
 
 monitor = SerenMonitor()
 try:
