@@ -34,7 +34,8 @@ g.log("#############  SERVICE ENTERED KEEP ALIVE  #################")
 
 
 osAndroid = xbmc.getCondVisibility('system.platform.android')
-if osAndroid:
+SKIN_DIR = xbmc.getSkinDir()
+if osAndroid or 'estuary' in str(SKIN_DIR):
 	from pathlib import Path
 	import shutil
 	import os

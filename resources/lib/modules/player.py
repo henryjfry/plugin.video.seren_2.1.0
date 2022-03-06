@@ -349,6 +349,17 @@ class SerenPlayer(xbmc.Player):
         subtitle = subtitles.SubtitleService().get_subtitle()
         if subtitle is not None:
             self.setSubtitles(subtitle)
+            xbmc.Player().showSubtitles(False)
+
+        import sys
+        from pathlib import Path
+        import xbmcvfs
+        subtitles_py = str(Path(xbmcvfs.translatePath("special://home/addons/service.next_playlist")))
+        sys.path.insert(0,subtitles_py) 
+        import subs
+        subs.subs_phil('/home/osmc/.kodi/addons/plugin.video.seren/resources/lib/modules/player.py:358')
+
+        """
         player = xbmc.Player()
         player.showSubtitles(False)
 
@@ -390,7 +401,7 @@ class SerenPlayer(xbmc.Player):
                 try:
                     if x == 0 and 'eng' in str(i).lower():
                         if len(audio) == 1 and len(subs) == 1:
-                            
+                            xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                             break
                         y = 0
                         for j in json_object['result']['subtitles']:
@@ -400,12 +411,15 @@ class SerenPlayer(xbmc.Player):
                                 enable_sub = True
                                 if not 'eng' in str(curr_lang):
                                     player.setAudioStream(x)
+                                    player.seekTime(int(0))
                                 #player.showSubtitles(True)
+                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                                 break
                             y = y + 1
                         if j['isforced'] == True and 'eng' in str(j['language']).lower():
                             enable_sub = True
                             sub_index = j['index']
+                            xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                             break
                         else:
                             y = 0
@@ -417,19 +431,24 @@ class SerenPlayer(xbmc.Player):
                                 enable_sub = True
                                 if not 'eng' in str(curr_lang):
                                     player.setAudioStream(x)
+                                    player.seekTime(int(0))
                                 #player.showSubtitles(True)
+                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                                 break
-                        
+                        xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                         break
-                    if x == 0 and 'rus' in str(i):
+                    if x == 0 and ('rus' in str(i) or 'ita' in str(i)):
                         y = 0
                         for k in audio:
                             if 'eng' in str(k): 
                                 if not 'eng' in str(curr_lang):
-                                    player.setAudioStream(y)
+                                    player.setAudioStream(k['index'])
+                                    player.seekTime(int(0))
+                                    xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                                 #player.showSubtitles(False)
                                 #enable_sub = False
                                 y = 0
+                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                                 break
                             y = y + 1
                         y = 0
@@ -440,6 +459,7 @@ class SerenPlayer(xbmc.Player):
                                 #player.showSubtitles(False)
                                 #enable_sub = False
                                 y = 0
+                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                                 break
                             y = y + 1
                         break
@@ -447,7 +467,9 @@ class SerenPlayer(xbmc.Player):
                         if 'jpn' not in str(audio[x-1]) and 'eng' not in str(audio[x-1]) and 'eng' in str(audio[x]):
                             if not 'eng' in str(curr_lang):
                                 player.setAudioStream(x)
+                                player.seekTime(int(0))
                             #player.showSubtitles(False)
+                            xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                             break
                 except:
                     if x == 0 and 'jpn' in str(i):
@@ -457,15 +479,17 @@ class SerenPlayer(xbmc.Player):
                                 sub_index = y
                                 if not 'eng' in str(curr_lang):
                                     player.setAudioStream(x)
+                                    player.seekTime(int(0))
                                 #player.showSubtitles(True)
                                 enable_sub = True
-                                
+                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                                 break
+                        xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
                         break
                         y = y + 1
                 x = x +1
         except:
-            
+            xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
             pass
         try: player.setSubtitleStream(sub_index)
         except: enable_sub = False
@@ -473,6 +497,7 @@ class SerenPlayer(xbmc.Player):
             player.showSubtitles(True)
         else:
             player.showSubtitles(False)
+        """
 
     @staticmethod
     def _get_kodi_preferred_subtitle_language():
@@ -697,10 +722,7 @@ class SerenPlayer(xbmc.Player):
 
         while self._is_file_playing() and not g.abort_requested():
 
-            try:
-                self._update_progress()
-            except:
-                break
+            self._update_progress()
 
             if not self.scrobble_started:
                 self._trakt_start_watching()
@@ -716,23 +738,9 @@ class SerenPlayer(xbmc.Player):
 
             if self.dialogs_enabled and not self.dialogs_triggered:
                 if time_left <= self.playing_next_time:
-                    #xbmc.executebuiltin('RunPlugin("plugin://plugin.video.seren/?action=runPlayerDialogs")')
-                    #from resources.lib.modules.player import PlayerDialogs
-                    xbmc.log(str('RunPlugin("plugin://plugin.video.seren/?action=runPlayerDialogs")')+'===>PHIL', level=xbmc.LOGINFO)
-                    player_dialogs = PlayerDialogs()
-                    player_dialogs.display_dialog()
-                    del player_dialogs
-                    """
-                    from resources.lib.gui.windows.playing_next import PlayingNext
-                    from resources.lib.database.skinManager import SkinManager
-
-                    window = PlayingNext(
-                        *SkinManager().confirm_skin_path("playing_next.xml"),
-                        item_information=self._get_next_item_item_information()
+                    xbmc.executebuiltin(
+                        'RunPlugin("plugin://plugin.video.seren/?action=runPlayerDialogs")'
                         )
-                    window.doModal()
-                    del window
-                    """
                     self.dialogs_triggered = True
 
             xbmc.sleep(100)

@@ -194,7 +194,8 @@ def if_playback_paused():
     #start_time = xbmc.Player().getTime()
     json_result = xbmc.executeJSONRPC('{"jsonrpc": "2.0","id": "1","method": "Player.GetProperties","params": {"playerid": 1,"properties": ["speed"]}}')
     json_object  = json.loads(json_result)
-    speed = json_object['result']['speed']
+    try: speed = json_object['result']['speed']
+    except: speed = 1
     xbmc.log(str(speed)+'playback_speed===>PHIL', level=xbmc.LOGINFO)
     #xbmc.sleep(10)
     #if xbmc.Player().getTime() == start_time:

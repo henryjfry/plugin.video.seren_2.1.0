@@ -212,20 +212,16 @@ class Sources(object):
     def _finalise_results(self):
         monkey_requests.allow_provider_requests = False
         self._send_provider_stop_event()
-        uncached = []
-        try:
-            for i in list(self.sources_information["allTorrents"].values()):
-                if i['hash'] not in self.sources_information['cached_hashes']:
-                    uncached.append(i)
-        except:
-            uncached = [i for i in self.sources_information["allTorrents"].values()
-                        if i['hash'] not in self.sources_information['cached_hashes']]
+
+        uncached = [i for i in self.sources_information["allTorrents"].values()
+                    if i['hash'] not in self.sources_information['cached_hashes']]
 
         if not self._is_playable_source():
             self._build_cache_assist()
             g.cancel_playback()
-            #if self.silent:
-            #    g.notification(g.ADDON_NAME, g.get_language_string(30055))
+            if self.silent:
+                g.log(str(g.ADDON_NAME + g.get_language_string(30055)))
+#                g.notification(g.ADDON_NAME, g.get_language_string(30055))
             return uncached, [], self.item_information
 
         sorted_sources = SourceSorter(self.media_type).sort_sources(
@@ -647,9 +643,6 @@ class Sources(object):
             for source in sources:
                 source['type'] = 'hoster'
                 source['release_title'] = source.get('release_title', title)
-                release_title = source['release_title'].lower()
-                quality = source_utils.get_quality(str(release_title))
-                source['quality'] = quality
                 source['source'] = source['source'].upper().split('.')[0]
                 source['size'] = source.get('size', '0')
                 source['info'] = source.get('info', [])
