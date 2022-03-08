@@ -23,7 +23,6 @@ from resources.lib.modules.global_lock import GlobalLock
 from resources.lib.modules.globals import g
 
 CLOUDFLARE_ERROR_MSG = "Service Unavailable - Cloudflare error"
-
 TRAKT_STATUS_CODES = {
     200: "Success",
     201: "Success - new resource created (POST)",
@@ -208,7 +207,13 @@ class TraktAPI(ApiBase):
         self.username = None
         self._load_settings()
         self.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
-        self.try_refresh_token()
+        try:
+            self.try_refresh_token()
+        except:
+            try:
+                self.try_refresh_token()
+            except:
+                return
         self.progress_dialog = xbmcgui.DialogProgress()
         self.language = g.get_language_code()
         self.country = g.get_language_code(True).split("-")[-1].lower()
@@ -501,8 +506,7 @@ class TraktAPI(ApiBase):
             xbmcgui.Dialog().ok(g.ADDON_NAME, g.get_language_string(30023))
             raise
 
-        #tools.copy2clip(user_code)
-        #xbmc.log(str(1)+'===>PHIL', level=xbmc.LOGINFO)
+        tools.copy2clip(user_code)
         self.progress_dialog.create(
             g.ADDON_NAME + ": " + g.get_language_string(30022),
             tools.create_multiline_message(
@@ -513,25 +517,21 @@ class TraktAPI(ApiBase):
                 line3=g.get_language_string(30047),
             ),
         )
-        x = 0
         failed = False
         self.progress_dialog.update(100)
-        while not failed and x < 25:
-            #xbmc.sleep(25000)
-            failed = False
-            #while (
-            #    not failed
-            #    and self.username is None
-            #    and not token_ttl <= 0
-            #    and not self.progress_dialog.iscanceled()
-            #):
+        while (
+            not failed
+            and self.username is None
+            and not token_ttl <= 0
+            and not self.progress_dialog.iscanceled()
+        ):
             xbmc.sleep(1000)
             if token_ttl % interval == 0:
-                    failed = self._auth_poll(device)
+                failed = self._auth_poll(device)
             progress_percent = int(float((token_ttl * 100) / expiry))
             self.progress_dialog.update(progress_percent)
             token_ttl -= 1
-            #xbmc.log(str(2)+'===>PHIL', level=xbmc.LOGINFO)
+
         self.progress_dialog.close()
 
     def _auth_poll(self, device):
@@ -565,6 +565,7 @@ class TraktAPI(ApiBase):
                 xbmc.executebuiltin(
                     'RunPlugin("{}?action=syncTraktActivities")'.format(g.BASE_URL)
                 )
+
 
         elif response.status_code == 404 or response.status_code == 410:
             self.progress_dialog.close()
