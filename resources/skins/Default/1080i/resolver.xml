@@ -4,15 +4,28 @@
     <coordinates>
         <left>0</left>
         <top>0</top>
+		<width>1920</width>
+		<height>1080</height>
     </coordinates>
     <controls>
-        <!-- Background Texture -->
-        <control type="image">
-            <texture>$INFO[Window().Property(texture.white)]</texture>
-            <colordiffuse>FF000000</colordiffuse>
-        </control>
-        <control type="list" id="1100">
-        </control>
+        
+		<!-- Background -->
+		<control type="group">
+			<top>0</top>
+			<left>0</left>
+			<width>1920</width>
+			<height>1080</height>
+			
+			<!-- Fallback -->
+			<control type="image">
+				<texture>white.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>
+			
+			<!-- Fanart -->
+			<control type="image">
+				<texture background="true">$INFO[Window().Property(item.art.fanart)]</texture>
+			</control>
 
         <!-- Background -->
         <control type="image">
@@ -68,15 +81,32 @@
                 </control>
             </control>
 
-        <control type="image">
-            <top>0</top>
-            <left>0</left>
-            <width>1920</width>
-            <height>1080</height>
-            <texture background="true">$INFO[Window().Property(texture.white)]</texture>
-            <colordiffuse>CC000000</colordiffuse>
-        </control>
 
+        <!-- Seren Peacock -->
+		<control type="image">
+			<centerleft>50%</centerleft>
+			<centertop>45%</centertop>
+			<align>center</align>
+			<aligny>center</aligny>
+			<width>100</width>
+			<aspectratio>keep</aspectratio>
+			<texture>$INFO[Window().Property(seren.logo)]</texture>
+			<visible>String.IsEmpty(Window().Property(item.art.clearlogo))</visible>
+		</control>
+		
+		<!-- Clearlogo -->
+		<control type="image">
+			<animation effect="fade" time="350" condition="String.IsEqual(Window().Property(from_source_select),true)">WindowOpen</animation>
+			<animation effect="fade" end="0" time="350">WindowClose</animation>
+			<centerleft>50%</centerleft>
+			<width>335</width>
+			<centertop>50%</centertop>
+			<align>center</align>
+			<aligny>center</aligny>
+			<aspectratio>keep</aspectratio>
+			<texture>$INFO[Window().Property(item.art.clearlogo)]</texture>
+			<visible>!String.IsEmpty(Window().Property(item.art.clearlogo))</visible>
+		</control>
 
         <!-- Seren Logo -->
         <!---control type="image" id="1001">
@@ -92,8 +122,8 @@
         </control>
 
         <control type="label">
-            <left>0</left>
-            <top>300</top>
+            <top>210</top>
+			<centerleft>50%</centerleft>
             <width>100%</width>
             <font>font12</font>
             <align>center</align>
@@ -142,6 +172,28 @@
                 <label>Resolution: [UPPERCASE][COLOR$INFO[Window().Property(settings.color)]]$INFO[Window().Property(source_resolution)][/COLOR][UPPERCASE] | Info: [UPPERCASE][COLOR$INFO[Window().Property(settings.color)]]$INFO[Window().Property(source_info)][/COLOR][/UPPERCASE]</label>
             </control>
 
-        </control>
+				<!-- Source Type -->
+				<control type="label">
+					<top>80</top>
+					<right>0</right>
+					<width>350</width>
+					<height>20</height>
+					<font>font12</font>
+					<align>right</align>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>[B][UPPERCASE]$ADDON[plugin.video.seren 30252]: [COLOR $INFO[Window().Property(settings.color)]]$INFO[Window().Property(source_type)][/COLOR][/UPPERCASE][/B]</label>
+				</control>
+				
+				<!-- Info -->
+				<control type="label">
+					<top>120</top>
+					<right>0</right>
+					<font>font12</font>
+					<align>right</align>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>[B][UPPERCASE]$INFO[Window().Property(info_text_formatted)][/UPPERCASE][/B]</label>
+				</control>
+			</control>
+		</control>
     </controls>
 </window>

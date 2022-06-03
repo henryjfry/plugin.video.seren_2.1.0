@@ -215,6 +215,7 @@
                     <texture background="true">$INFO[Window().Property(texture.white)]</texture>
                     <colordiffuse>AA2e2d32</colordiffuse>
                 </control>
+                
                 <control type="label">
                     <top>20</top>
                     <left>10</left>

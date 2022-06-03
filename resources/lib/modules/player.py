@@ -2,6 +2,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import copy
+import importlib
 import json
 import sys
 import time
@@ -13,7 +14,7 @@ import xbmcplugin
 from resources.lib.common import tools
 from resources.lib.database.trakt_sync import bookmark
 from resources.lib.indexers import trakt
-from resources.lib.modules import smartPlay, subtitles
+from resources.lib.modules import smartPlay
 from resources.lib.modules.globals import g
 
 
@@ -337,168 +338,6 @@ class SerenPlayer(xbmc.Player):
         if g.get_bool_setting("general.force.widget.refresh.playback"):
             g.trigger_widget_refresh()
 
-    def _add_subtitle_if_needed(self):
-        if not g.get_bool_setting("general.subtitle.enable"):
-            return
-
-        preferred_lang = self._get_kodi_preferred_subtitle_language()
-
-        if preferred_lang == self.getSubtitles():
-            return
-
-        subtitle = subtitles.SubtitleService().get_subtitle()
-        if subtitle is not None:
-            self.setSubtitles(subtitle)
-            xbmc.Player().showSubtitles(False)
-
-        import sys
-        from pathlib import Path
-        import xbmcvfs
-        subtitles_py = str(Path(xbmcvfs.translatePath("special://home/addons/service.next_playlist")))
-        sys.path.insert(0,subtitles_py) 
-        import subs
-        subs.subs_phil('/home/osmc/.kodi/addons/plugin.video.seren/resources/lib/modules/player.py:358')
-
-        """
-        player = xbmc.Player()
-        player.showSubtitles(False)
-
-        json_result = xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params": {"labels":["VideoPlayer.AudioLanguage"]}, "id":1}')
-        json_object  = json.loads(json_result)
-        #xbmc.log(str(json_object)+'===>PHIL_SUBTITLES!!!!!!', level=xbmc.LOGINFO)
-        try: curr_lang = json_object['result']['VideoPlayer.AudioLanguage']
-        except: curr_lang = None
-
-        json_result = xbmc.executeJSONRPC('{"jsonrpc": "2.0","id": "1","method": "Player.GetProperties","params": {"playerid": 1,"properties": ["subtitles"]}}')
-        json_object  = json.loads(json_result)
-        #xbmc.log(str(json_object)+'===>PHIL', level=xbmc.LOGINFO)
-        enable_sub = False
-        try:
-            for i in json_object['result']['subtitles']:
-                if 'full' in str(i['name']).lower() and 'eng' in str(i['name']).lower() and len(audio) < 5 and len(audio) > 1:
-                    xbmc.log(str('SUBTITLES')+'a4k1===>PHIL', level=xbmc.LOGFATAL)
-                    sub_index = int(i['index'])
-                    enable_sub = False
-                    #player.setSubtitleStream(sub_index)
-                    
-                if i['isforced'] == True and 'eng' in str(i['language']).lower():
-                    xbmc.log(str('SUBTITLES')+'===>PHIL', level=xbmc.LOGFATAL)
-                    sub_index = int(i['index'])
-                    enable_sub = True
-                    #player.setSubtitleStream(sub_index)
-                    break
-
-        except:
-            pass
-        try:
-            xbmc.log(str('SUBTITLES')+'a4k2===>PHIL', level=xbmc.LOGFATAL)
-            #xbmc.log(str(json_object['result']['subtitles'])+'===>PHIL', level=xbmc.LOGINFO)
-            subs = player.getAvailableSubtitleStreams()
-            audio = player.getAvailableAudioStreams()
-            x = 0
-            y = 0
-            for i in audio:
-                try:
-                    if x == 0 and 'eng' in str(i).lower():
-                        if len(audio) == 1 and len(subs) == 1:
-                            xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                            break
-                        y = 0
-                        for j in json_object['result']['subtitles']:
-                            if j['isforced'] == True and 'eng' in str(j['language']).lower():
-                                #player.setSubtitleStream(y)
-                                sub_index = j['index']
-                                enable_sub = True
-                                if not 'eng' in str(curr_lang):
-                                    player.setAudioStream(x)
-                                    player.seekTime(int(0))
-                                #player.showSubtitles(True)
-                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                                break
-                            y = y + 1
-                        if j['isforced'] == True and 'eng' in str(j['language']).lower():
-                            enable_sub = True
-                            sub_index = j['index']
-                            xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                            break
-                        else:
-                            y = 0
-                    if x == 0 and 'jpn' in str(i) and 'eng' in str(audio[x+1]):
-                        for j in subs:
-                            if 'eng' in str(j):
-                                #player.setSubtitleStream(y)
-                                sub_index = y
-                                enable_sub = True
-                                if not 'eng' in str(curr_lang):
-                                    player.setAudioStream(x)
-                                    player.seekTime(int(0))
-                                #player.showSubtitles(True)
-                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                                break
-                        xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                        break
-                    if x == 0 and ('rus' in str(i) or 'ita' in str(i)):
-                        y = 0
-                        for k in audio:
-                            if 'eng' in str(k): 
-                                if not 'eng' in str(curr_lang):
-                                    player.setAudioStream(k['index'])
-                                    player.seekTime(int(0))
-                                    xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                                #player.showSubtitles(False)
-                                #enable_sub = False
-                                y = 0
-                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                                break
-                            y = y + 1
-                        y = 0
-                        for k in subs:
-                            if 'eng' in str(k): 
-                                #player.setSubtitleStream(y)
-                                sub_index = y
-                                #player.showSubtitles(False)
-                                #enable_sub = False
-                                y = 0
-                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                                break
-                            y = y + 1
-                        break
-                    if x == 1:
-                        if 'jpn' not in str(audio[x-1]) and 'eng' not in str(audio[x-1]) and 'eng' in str(audio[x]):
-                            if not 'eng' in str(curr_lang):
-                                player.setAudioStream(x)
-                                player.seekTime(int(0))
-                            #player.showSubtitles(False)
-                            xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                            break
-                except:
-                    if x == 0 and 'jpn' in str(i):
-                        for j in subs:
-                            if 'eng' in str(j):
-                                #player.setSubtitleStream(y)
-                                sub_index = y
-                                if not 'eng' in str(curr_lang):
-                                    player.setAudioStream(x)
-                                    player.seekTime(int(0))
-                                #player.showSubtitles(True)
-                                enable_sub = True
-                                xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                                break
-                        xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-                        break
-                        y = y + 1
-                x = x +1
-        except:
-            xbmc.log(str('Line ')+str(getframeinfo(currentframe()).lineno)+'___'+str(getframeinfo(currentframe()).filename)+'===>PHIL', level=xbmc.LOGFATAL)
-            pass
-        try: player.setSubtitleStream(sub_index)
-        except: enable_sub = False
-        if enable_sub == True:
-            player.showSubtitles(True)
-        else:
-            player.showSubtitles(False)
-        """
-
     @staticmethod
     def _get_kodi_preferred_subtitle_language():
         language = g.get_kodi_preferred_subtitle_language(True)
@@ -521,16 +360,19 @@ class SerenPlayer(xbmc.Player):
         g.clean_info_keys(info)
         g.convert_info_dates(info)
 
-        if isinstance(stream_link, dict) and stream_link["type"] == "Adaptive":
+        if isinstance(stream_link, dict) and stream_link["type"] == "adaptive":
+            if g.ADDON_USERDATA_PATH not in sys.path:
+                sys.path.append(g.ADDON_USERDATA_PATH)
             provider = stream_link["provider_imports"]
-            provider_module = __import__(
-                "{}.{}".format(provider[0], provider[1]), fromlist=[""]
-                )
+            provider_module = importlib.import_module(
+                "{}.{}".format(provider[0], provider[1])
+            )
             if not hasattr(provider_module, "get_listitem") and hasattr(
                     provider_module, "sources"
                     ):
                 provider_module = provider_module.sources()
             item = provider_module.get_listitem(stream_link)
+            item.setInfo("video", info)
         else:
             item = xbmcgui.ListItem(path=stream_link)
             info["FileNameAndPath"] = tools.unquote(self.playing_file)
@@ -697,7 +539,7 @@ class SerenPlayer(xbmc.Player):
          ):
             xbmc.sleep(10000)
             g.set_runtime_setting("marked_watched_dialog_open", True)
-            if xbmcgui.Dialog().yesno(g.ADDON_NAME, g.get_language_string(30514)):
+            if xbmcgui.Dialog().yesno(g.ADDON_NAME, g.get_language_string(30486)):
                 self._force_marked_watched = True
             g.set_runtime_setting("marked_watched_dialog_open", False)
 
@@ -717,7 +559,6 @@ class SerenPlayer(xbmc.Player):
             self.resumed = True
 
         self._log_debug_information()
-        self._add_subtitle_if_needed()
         xbmc.sleep(5000)
 
         while self._is_file_playing() and not g.abort_requested():
@@ -858,23 +699,27 @@ class PlayerDialogs(xbmc.Player):
         from resources.lib.gui.windows.playing_next import PlayingNext
         from resources.lib.database.skinManager import SkinManager
 
-        window = PlayingNext(
-            *SkinManager().confirm_skin_path("playing_next.xml"),
-            item_information=self._get_next_item_item_information()
-            )
-        window.doModal()
-        del window
+        try:
+            window = PlayingNext(
+                *SkinManager().confirm_skin_path("playing_next.xml"),
+                item_information=self._get_next_item_item_information()
+                )
+            window.doModal()
+        finally:
+            del window
 
     def _show_still_watching(self):
         from resources.lib.gui.windows.still_watching import StillWatching
         from resources.lib.database.skinManager import SkinManager
 
-        window = StillWatching(
-            *SkinManager().confirm_skin_path("still_watching.xml"),
-            item_information=self._get_next_item_item_information()
-            )
-        window.doModal()
-        del window
+        try:
+            window = StillWatching(
+                *SkinManager().confirm_skin_path("still_watching.xml"),
+                item_information=self._get_next_item_item_information()
+                )
+            window.doModal()
+        finally:
+            del window
 
     @staticmethod
     def _get_next_item_item_information():

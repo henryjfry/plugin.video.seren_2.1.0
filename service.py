@@ -71,11 +71,9 @@ try:
             "warning"
         )
 
-    # Disable the restoration of reuselanguageinvoker addon.xml based on settings value on upgrade.
-    # It can still be toggled in settings although initially it will show user's last setting value
-    # This is in preparation for removal of user setting/toggle.
-    # maintenance.toggle_reuselanguageinvoker(
-    #     True if g.get_setting("reuselanguageinvoker.status") == "Enabled" else False)
+    xbmc.executebuiltin(
+        'RunPlugin("plugin://plugin.video.seren/?action=torrentCacheCleanup")'
+    )
 
     g.wait_for_abort(30)  # Sleep for a half a minute to allow widget loads to complete.
     while not monitor.abortRequested():
@@ -88,16 +86,16 @@ try:
             xbmc.executebuiltin(
                 'RunPlugin("plugin://plugin.video.seren/?action=runMaintenance")'
             )
-            if not g.wait_for_abort(15):  # Sleep to make sure tokens refreshed during maintenance
-                xbmc.executebuiltin(
-                    'RunPlugin("plugin://plugin.video.seren/?action=syncTraktActivities")'
-                )
-            if not g.wait_for_abort(15):  # Sleep to make sure we don't possibly clobber settings
-                xbmc.executebuiltin(
-                    'RunPlugin("plugin://plugin.video.seren/?action=updateLocalTimezone")'
-                )
-            if g.wait_for_abort(60 * randint(57, 63)):
-                break
+        if not g.wait_for_abort(15):  # Sleep to make sure we don't possibly clobber settings
+            xbmc.executebuiltin(
+                'RunPlugin("plugin://plugin.video.seren/?action=cleanOrphanedMetadata")'
+            )
+        if not g.wait_for_abort(15):  # Sleep to make sure we don't possibly clobber settings
+            xbmc.executebuiltin(
+                'RunPlugin("plugin://plugin.video.seren/?action=updateLocalTimezone")'
+            )
+        if g.wait_for_abort(60 * randint(13, 17)):
+            break
 finally:
     del monitor
     g.deinit()
