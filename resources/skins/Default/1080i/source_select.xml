@@ -215,7 +215,6 @@
                     <texture background="true">$INFO[Window().Property(texture.white)]</texture>
                     <colordiffuse>AA2e2d32</colordiffuse>
                 </control>
-                
                 <control type="label">
                     <top>20</top>
                     <left>10</left>
@@ -272,7 +271,7 @@
                     <textcolor>FFFFFFFF</textcolor>
             <shadowcolor>dimgrey</shadowcolor>
                     <font>font10</font>
-                    <label>Info: [UPPERCASE][COLOR $INFO[Window().Property(settings.color)]]$INFO[ListItem.Property(info)][/COLOR][/UPPERCASE]
+                    <label>Info: [UPPERCASE][COLOR $INFO[Window().Property(settings.color)]]$INFO[ListItem.Property(info_text_formatted)][/COLOR][/UPPERCASE]
                     </label>
                 </control>
                 <control type="label">
@@ -394,7 +393,7 @@
                     <textcolor>FFFFFFFF</textcolor>
             <shadowcolor>dimgrey</shadowcolor>
                     <font>font10</font>
-                    <label>Info: [UPPERCASE][COLOR $INFO[Window().Property(settings.color)]]$INFO[ListItem.Property(info)][/COLOR][/UPPERCASE]
+                    <label>Info: [UPPERCASE][COLOR $INFO[Window().Property(settings.color)]]$INFO[ListItem.Property(info_text_formatted)][/COLOR][/UPPERCASE]
                     </label>
                 </control>
                 <control type="label">
