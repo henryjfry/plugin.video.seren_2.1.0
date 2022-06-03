@@ -21,7 +21,7 @@ import pytz
 from resources.lib.common import tools
 from resources.lib.common.tools import cached_property
 from resources.lib.modules.settings_cache import PersistedSettingsCache, RuntimeSettingsCache
-from resources.lib.third_party import pytz
+from resources.lib.third_party import tzlocal
 
 viewTypes = [
     ("Default", 50),
