@@ -112,7 +112,10 @@ class SerenPlayer(xbmc.Player):
         :rtype: int
         """
         if self.isPlaying():
-            return xbmc.Player().getTotalTime()
+            try:
+                return xbmc.Player().getTotalTime()
+            except:
+                return 0
         else:
             return 0
 
@@ -123,7 +126,10 @@ class SerenPlayer(xbmc.Player):
         :rtype: int
         """
         if self.isPlaying():
-            return xbmc.Player().getTime()
+            try:
+                return xbmc.Player().getTime()
+            except:
+                return 0
         else:
             return 0
 
@@ -133,7 +139,10 @@ class SerenPlayer(xbmc.Player):
         :return: True if playing an item else False
         :rtype: bool
         """
-        return xbmc.Player().isPlaying()
+        try:
+            return xbmc.Player().isPlaying()
+        except:
+            return 0
 
     def isPlayingVideo(self):
         """
@@ -189,7 +198,6 @@ class SerenPlayer(xbmc.Player):
         """
         if self.isPlaying():
             xbmc.Player().setSubtitles(subtitle)
-            xbmc.Player().showSubtitles(False)
         else:
             return None
 
