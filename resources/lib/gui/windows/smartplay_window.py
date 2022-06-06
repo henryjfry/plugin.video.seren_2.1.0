@@ -146,6 +146,7 @@ class SmartPlayWindow(BaseWindow):
     def handle_action(self, action, control_id=None):
         if action == 7:
             if control_id == 3001:
+                if_playback_paused()
                 xbmc.executebuiltin('PlayerControl(BigSkipForward)')
                 self.close()
             if control_id == 3002:
@@ -153,3 +154,18 @@ class SmartPlayWindow(BaseWindow):
             if control_id == 3003:
                 self.player.stop()
                 self.close()
+
+    def if_playback_paused():
+        import xbmc
+        #start_time = xbmc.Player().getTime()
+        json_result = xbmc.executeJSONRPC('{"jsonrpc": "2.0","id": "1","method": "Player.GetProperties","params": {"playerid": 1,"properties": ["speed"]}}')
+        json_object  = json.loads(json_result)
+        speed = json_object['result']['speed']
+        xbmc.log(str(speed)+'playback_speed===>PHIL', level=xbmc.LOGINFO)
+        #xbmc.sleep(10)
+        #if xbmc.Player().getTime() == start_time:
+        if int(speed) == 0:
+            xbmc.executebuiltin('PlayerControl(Play)')
+            return
+        else:
+            return
