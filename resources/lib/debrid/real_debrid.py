@@ -300,16 +300,13 @@ class RealDebrid:
         post_data = {"link": link}
         response = self.post_url(url, post_data)
         try:
+            return response["download"]
             headers2=requests.head(response["download"]).headers
             if not str('attachment') in headers2.get('Content-Disposition',''):
-                xbmc.log(str(response)+'seren_response===>PHIL', level=xbmc.LOGINFO)
+                #xbmc.log(str(response)+'seren_response===>PHIL', level=xbmc.LOGINFO)
                 raise UnexpectedResponse(response)
             else:
-                if 'sample' in str(response["download"]):
-                    xbmc.log(str(response)+'seren_response===>PHIL', level=xbmc.LOGINFO)
-                    raise UnexpectedResponse(response)
-                else:
-                    return response["download"]
+                return response["download"]
         except KeyError:
             raise UnexpectedResponse(response)
 
@@ -338,8 +335,7 @@ class RealDebrid:
             else True
         )
 
-
-    @use_cache(24)
+    @use_cache(12)
     def get_relevant_hosters(self):
         host_list = self.get_url("hosts/status")
         if "error" in host_list:
