@@ -99,8 +99,8 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
         else:
             last_activities_call = self.activities["last_activities_call"]
 
-        if time.time() < (last_activities_call + (5 * 60)):
-            g.log("Activities endpoint called too frequently, skipping sync", 'info')
+        if time.time() < (last_activities_call + (5 * 60 * 60)):
+            g.log("Activities endpoint called too frequently, skipping sync    time=  " +str(time.time())+'   last_activities_call=   '+ str(last_activities_call + (5 * 60 * 60)), 'info')
             return None
         else:
             remote_activities = self.trakt_api.get_json("sync/last_activities")
