@@ -812,8 +812,16 @@ def dispatch(params):
         toggle_reuselanguageinvoker()
 
     elif action == "runMaintenance":
-        from resources.lib.common.maintenance import run_maintenance
-        run_maintenance()
+        if_playing = params.get('playing')
+        try:
+            playing =  xbmc.Player().isPlaying()
+            if playing == True:
+                xbmc.log(str('runMaintenance - SEREN IS PLAYING!!!')+'===>PHIL', level=xbmc.LOGINFO)
+            else:
+                from resources.lib.common.maintenance import run_maintenance
+                run_maintenance()
+        except:
+            xbmc.log(str('runMaintenance - SEREN EXCEPTION!!!')+'===>PHIL', level=xbmc.LOGINFO)
 
     elif action == "torrentCacheCleanup":
         from resources.lib.database import torrentCache

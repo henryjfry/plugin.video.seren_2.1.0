@@ -77,6 +77,10 @@ try:
 
     g.wait_for_abort(30)  # Sleep for a half a minute to allow widget loads to complete.
     while not monitor.abortRequested():
+        playing =  xbmc.Player().isPlaying() 
+        while playing: 
+            xbmc.sleep(1000*60) 
+            playing =  xbmc.Player().isPlaying() 
         curr_time = time.time()
         Seren_LastUpdate = xbmcgui.Window(10000).getProperty('Next_EP.Seren_LastUpdate')
         if str(Seren_LastUpdate) == '':
