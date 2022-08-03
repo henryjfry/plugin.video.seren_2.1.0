@@ -111,7 +111,7 @@
                 <top>120</top>
 <!--- PHIL --->
                 <control type="label">
-                    <top>100</top>
+                    <top>285</top>
                     <width>400</width>
                     <font>font14</font>
                     <textcolor>AAFFFFFF</textcolor>
@@ -136,7 +136,7 @@
                 </control>
 <!--- PHIL --->
                 <control type="label">
-                    <top>290</top>
+                    <top>390</top>
                     <width>400</width>
                     <font>font12</font>
                     <textcolor>AAFFFFFF</textcolor>

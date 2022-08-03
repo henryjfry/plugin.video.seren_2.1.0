@@ -291,7 +291,7 @@
                     <left>1010</left>
                     <width>128.8</width>
                     <height>87.2</height>
-                    <texture background="true" colordiffuse="yellow">/home/osmc/.kodi/addons/plugin.video.seren/resources/skins/Default/media/quality/qualitysd480.png</texture>
+                    <texture background="true" colordiffuse="yellow">$INFO[Window().Property(skin.dir)]/resources/skins/media/quality/qualitysd480.png</texture>
                     <visible>String.Contains(ListItem.Property(quality),SD)</visible>
                 </control>
                 <control type="image">
@@ -299,7 +299,7 @@
                     <left>1010</left>
                     <width>128.8</width>
                     <height>87.2</height>
-                    <texture background="true">/home/osmc/.kodi/addons/plugin.video.seren/resources/skins/Default/media/quality/qualityhd720.png</texture>
+                    <texture background="true">$INFO[Window().Property(skin.dir)]/resources/skins/media/quality/qualityhd720.png</texture>
                     <visible>String.Contains(ListItem.Property(quality),720P)</visible>
                 </control>
                 <control type="image">
@@ -307,7 +307,7 @@
                     <left>1010</left>
                     <width>128.8</width>
                     <height>87.2</height>
-                    <texture background="true" colordiffuse="green">/home/osmc/.kodi/addons/plugin.video.seren/resources/skins/Default/media/quality/qualityhd1080.png</texture>
+                    <texture background="true" colordiffuse="green">$INFO[Window().Property(skin.dir)]/resources/skins/media/quality/qualityhd1080.png</texture>
                     <visible>String.Contains(ListItem.Property(quality),1080P)</visible>
                 </control>
                 <control type="image">
@@ -315,7 +315,7 @@
                     <left>1010</left>
                     <width>128.8</width>
                     <height>87.2</height>
-                    <texture background="true">/home/osmc/.kodi/addons/plugin.video.seren/resources/skins/Default/media/quality/qualityhd4k.png</texture>
+                    <texture background="true">$INFO[Window().Property(skin.dir)]/resources/skins/media/quality/qualityhd4k.png</texture>
                     <visible>String.Contains(ListItem.Property(quality),4k)</visible>
                 </control>
 
@@ -413,7 +413,7 @@
                     <left>1010</left>
                     <width>128.8</width>
                     <height>87.2</height>
-                    <texture background="true" colordiffuse="yellow">/home/osmc/.kodi/addons/plugin.video.seren/resources/skins/Default/media/quality/qualitysd480.png</texture>
+                    <texture background="true" colordiffuse="yellow">$INFO[Window().Property(skin.dir)]/resources/skins/media/quality/qualitysd480.png</texture>
                     <visible>String.Contains(ListItem.Property(quality),SD)</visible>
                 </control>
                 <control type="image">
@@ -421,7 +421,7 @@
                     <left>1010</left>
                     <width>128.8</width>
                     <height>87.2</height>
-                    <texture background="true">/home/osmc/.kodi/addons/plugin.video.seren/resources/skins/Default/media/quality/qualityhd720.png</texture>
+                    <texture background="true">$INFO[Window().Property(skin.dir)]/resources/skins/media/quality/qualityhd720.png</texture>
                     <visible>String.Contains(ListItem.Property(quality),720P)</visible>
                 </control>
                 <control type="image">
@@ -429,7 +429,7 @@
                     <left>1010</left>
                     <width>128.8</width>
                     <height>87.2</height>
-                    <texture background="true" colordiffuse="green">/home/osmc/.kodi/addons/plugin.video.seren/resources/skins/Default/media/quality/qualityhd1080.png</texture>
+                    <texture background="true" colordiffuse="green">$INFO[Window().Property(skin.dir)]/resources/skins/media/quality/qualityhd1080.png</texture>
                     <visible>String.Contains(ListItem.Property(quality),1080P)</visible>
                 </control>
                 <control type="image">
@@ -437,7 +437,7 @@
                     <left>1010</left>
                     <width>128.8</width>
                     <height>87.2</height>
-                    <texture background="true">/home/osmc/.kodi/addons/plugin.video.seren/resources/skins/Default/media/quality/qualityhd4k.png</texture>
+                    <texture background="true">$INFO[Window().Property(skin.dir)]/resources/skins/media/quality/qualityhd4k.png</texture>
                     <visible>String.Contains(ListItem.Property(quality),4k) | String.Contains(ListItem.Property(quality),4K)</visible>
                 </control>
 

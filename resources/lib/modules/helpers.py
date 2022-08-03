@@ -19,7 +19,7 @@ class Resolverhelper(object):
     Helper object to stream line resolving items
     """
     @use_cache(24)
-    def resolve_silent_or_visible(self, sources, item_information, pack_select=False, overwrite_cache=False):
+    def resolve_silent_or_visible(self, sources, item_information, pack_select=False, overwrite_cache=False, from_source_select=False):
         """
         Method to handle automatic background or foreground resolving
         :param sources: list of sources to handle
@@ -31,6 +31,8 @@ class Resolverhelper(object):
         """
         stream_link = ""
         release_title = ""
+        try: from_source_select = from_source_select
+        except: from_source_select = False
 
         if g.get_bool_runtime_setting('tempSilent'):
             stream_link, release_title = Resolver().resolve_multiple_until_valid_link(sources, item_information, pack_select, True)
