@@ -910,3 +910,34 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
             (trakt_show_id, season, episode),
         )
 
+	def force_show_delete(self, trakt_show_id):
+		import xbmc
+		import xbmcvfs
+		import sqlite3
+		addonUserDataFolder = xbmcvfs.translatePath("special://profile/addon_data/plugin.video.seren/traktSync.db")
+
+		con = sqlite3.connect(addonUserDataFolder)
+		cur = con.cursor()
+		tvdb_id = trakt_show_id
+
+		sql_result = cur.execute("""
+		DELETE FROM seasons
+		where trakt_show_id in (SELECT trakt_id  from shows where trakt_id = %s);
+		""" % (tvdb_id)).fetchall()
+		sql_result
+
+		sql_result = cur.execute("""
+		DELETE FROM episodes
+		where trakt_show_id in (SELECT trakt_id  from shows where trakt_id = %s);
+		""" % (tvdb_id)).fetchall()
+		sql_result
+
+		sql_result = cur.execute("""
+		DELETE FROM shows
+		where trakt_id = %s;
+		""" % (tvdb_id)).fetchall()
+		sql_result
+
+		con.commit()
+		cur.close()
+		con.close()
