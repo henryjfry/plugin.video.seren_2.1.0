@@ -910,6 +910,7 @@ class TraktSyncDatabase(trakt_sync.TraktSyncDatabase):
             (trakt_show_id, season, episode),
         )
 
+	
 	def force_show_delete(self, trakt_show_id):
 		import xbmc
 		import xbmcvfs
