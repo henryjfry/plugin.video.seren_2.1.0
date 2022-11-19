@@ -20,7 +20,10 @@ from unidecode import unidecode
 from resources.lib.common import tools
 from resources.lib.common.tools import cached_property
 from resources.lib.modules.settings_cache import PersistedSettingsCache, RuntimeSettingsCache
-from resources.lib.third_party import pytz
+try:
+    from resources.lib.third_party import pytz
+except:
+    import pytz
 
 viewTypes = [
     ("Default", 50),
