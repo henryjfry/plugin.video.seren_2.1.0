@@ -47,6 +47,17 @@ def set_info_properties(info, item):
         ),
     )
 
+    item.setProperty(
+        "info_text_formatted",
+        " | ".join(
+            [
+                "{}{}[/COLOR]".format(color_tag, " ".join(struct_info[c]))
+                for c in codec_type_display_list
+                if struct_info[c]
+            ]
+        ),
+    )
+
     for prop in struct_info:
         item.setProperty("info.{}_text".format(prop), " ".join(struct_info[prop]))
         for n in range(0, len(struct_info[prop])):
