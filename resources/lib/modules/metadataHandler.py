@@ -50,7 +50,7 @@ class MetadataHandler(object):
         self.season_landscape = g.get_bool_setting("season.landscape", "true")
         self.season_fanart = g.get_bool_setting("season.fanart", "true")
         self.episode_fanart = g.get_bool_setting("episode.fanart", "true")
-        self.episode_fanart = "false"
+        self.episode_fanart = False
         self.tvshows_preferred_art_source = g.get_int_setting(
             "tvshows.preferedsource", 1
         )
