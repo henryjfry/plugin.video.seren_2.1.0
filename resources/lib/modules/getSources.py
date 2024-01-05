@@ -281,7 +281,7 @@ class Sources(object):
             self._build_cache_assist()
             g.cancel_playback()
             if self.silent:
-                g.log(str(g.ADDON_NAME + g.get_language_string(30055)))
+                g.log(g.ADDON_NAME + g.get_language_string(30055))
 #                g.notification(g.ADDON_NAME, g.get_language_string(30055))
             return uncached, [], self.item_information
 

@@ -20,10 +20,9 @@ from unidecode import unidecode
 from resources.lib.common import tools
 from resources.lib.common.tools import cached_property
 from resources.lib.modules.settings_cache import PersistedSettingsCache, RuntimeSettingsCache
-try:
-    from resources.lib.third_party import pytz
-except:
-    import pytz
+
+from resources.lib.third_party import pytz
+
 
 viewTypes = [
     ("Default", 50),
@@ -542,23 +541,13 @@ class GlobalVariables(object):
         if "episode" in action_args["item_type"]:
             from resources.lib.database.trakt_sync import shows
 
-            try:
-                action_args.update(
-                    shows.TraktSyncDatabase().get_episode_action_args(
-                        action_args["trakt_id"],
-                        action_args["season"],
-                        action_args["episode"],
-                    )
+            action_args.update(
+                shows.TraktSyncDatabase().get_episode_action_args(
+                    action_args["trakt_id"],
+                    action_args["season"],
+                    action_args["episode"],
                 )
-            except:
-                shows.TraktSyncDatabase().force_show_delete(action_args["trakt_id"])
-                action_args.update(
-                    shows.TraktSyncDatabase().get_episode_action_args(
-                        action_args["trakt_id"],
-                        action_args["season"],
-                        action_args["episode"],
-                    )
-                )
+            )
 
         if "show" in action_args["item_type"]:
             action_args["item_type"] = "shows"

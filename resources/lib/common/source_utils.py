@@ -35,6 +35,7 @@ class CannotGenerateRegexFilterException(Exception):
 
     pass
 
+
 def get_quality(release_title):
     """
     Identifies resolution based on release title information
@@ -67,6 +68,7 @@ INFO_STRUCT = {
             "WMV",
             "MP4",
             "MPEG",
+            "HI10",
         },
         "hdrcodec": {
             "DV",
