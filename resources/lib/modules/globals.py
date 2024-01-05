@@ -540,7 +540,7 @@ class GlobalVariables(object):
 
         if "episode" in action_args["item_type"]:
             from resources.lib.database.trakt_sync import shows
-
+            #shows.TraktSyncDatabase().force_show_delete(action_args["trakt_id"])
             action_args.update(
                 shows.TraktSyncDatabase().get_episode_action_args(
                     action_args["trakt_id"],
