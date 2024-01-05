@@ -2,7 +2,7 @@
 <addon id="plugin.video.seren" version="2.2.4" name="Seren" provider-name="Nixgates">
     <requires>
         <import addon="xbmc.addon" version="17.9.910" />
-        <import addon="script.module.pytz"/>
+        <import addon="script.module.pytz" version="2014.2"/>
         <import addon="script.module.future" version="0.17.1"/>
         <import addon="script.module.requests" version="2.22.0" />
         <import addon="script.module.beautifulsoup4" version="4.6.2"/>
